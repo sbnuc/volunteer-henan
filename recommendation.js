@@ -265,7 +265,7 @@ class RecommendationEngine {
         }
 
         recommendedUnis.sort((a, b) => {
-            const levelOrder = { '保底': 0, '稳妥': 1, '冲刺': 2 };
+            const levelOrder = { '冲刺': 0, '稳妥': 1, '保底': 2 };
             return levelOrder[a.matchLevel] - levelOrder[b.matchLevel] || a.scoreDiff - b.scoreDiff;
         });
 
