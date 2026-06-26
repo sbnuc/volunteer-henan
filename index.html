@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>河南高考志愿填报系统 - 性格测试与院校推荐</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>河南高考志愿填报系统</h1>
+            <p>结合性格测试结果，智能推荐适合的专业与院校</p>
+        </header>
+
+        <nav class="step-nav">
+            <div class="step active" data-step="1">1. 选择测试</div>
+            <div class="step" data-step="2">2. 性格测试</div>
+            <div class="step" data-step="3">3. 分数位次</div>
+            <div class="step" data-step="4">4. 推荐结果</div>
+        </nav>
+
+        <main>
+            <!-- 测试选择部分 -->
+            <section id="select-section" class="section active">
+                <h2>选择性格测试</h2>
+                <p class="section-desc">请从以下5种性格测试中选择至少2个进行测试（也可全部测试），测试结果将帮助我们为您推荐最适合的专业方向</p>
+                <div id="test-selection"></div>
+            </section>
+
+            <!-- 性格测试部分 -->
+            <section id="test-section" class="section">
+                <h2>性格测试</h2>
+                <div id="dimension-info"></div>
+                <div class="test-content">
+                    <div id="question-container">
+                        <p id="question-text"></p>
+                        <div id="options-container"></div>
+                    </div>
+                    <div id="test-progress">
+                        <div id="progress-bar"></div>
+                        <span id="progress-text">0/0</span>
+                    </div>
+                </div>
+                <div class="test-navigation">
+                    <button id="prev-question" class="btn-secondary" onclick="handlePrevQuestion()">上一题</button>
+                    <button id="next-question" class="btn-primary" onclick="handleNextQuestion()">下一题</button>
+                </div>
+            </section>
+
+            <!-- 分数位次输入部分 -->
+            <section id="score-section" class="section">
+                <h2>分数与位次</h2>
+                <p class="section-desc">请输入您的高考分数、位次和选科组合，我们将为您推荐合适的院校</p>
+                <form id="score-form" onsubmit="handleScoreSubmit(event)">
+                    <div class="form-group">
+                        <label for="score">高考分数：</label>
+                        <input type="number" id="score" min="0" max="750" placeholder="请输入您的高考分数" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ranking">省排名位次：</label>
+                        <input type="number" id="ranking" min="1" max="1000000" placeholder="请输入您的省排名位次" required>
+                    </div>
+                    <div class="form-group">
+                        <label>首选科目组：</label>
+                        <select id="subject-group" required>
+                            <option value="">请选择</option>
+                            <option value="phys">物理组（首选物理，适合理工科方向）</option>
+                            <option value="hist">历史组（首选历史，适合文史类方向）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>再选科目（可选，用于判断专业选科要求）：</label>
+                        <div class="subject-checkboxes" id="subject-checkboxes">
+                            <label class="checkbox-label"><input type="checkbox" name="subject" value="化学"> 化学</label>
+                            <label class="checkbox-label"><input type="checkbox" name="subject" value="生物"> 生物</label>
+                            <label class="checkbox-label"><input type="checkbox" name="subject" value="政治"> 政治</label>
+                            <label class="checkbox-label"><input type="checkbox" name="subject" value="地理"> 地理</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">获取推荐结果</button>
+                </form>
+            </section>
+
+            <!-- 推荐结果部分 -->
+            <section id="result-section" class="section">
+                <h2>推荐结果</h2>
+                <div id="personality-summary" class="summary-box"></div>
+                
+                <div class="recommendation-tabs">
+                    <button class="rec-tab active" data-rec="major">专业推荐</button>
+                    <button class="rec-tab" data-rec="university">院校推荐</button>
+                </div>
+
+                <div id="major-results" class="results-grid"></div>
+                <div id="university-results" class="results-grid" style="display:none"></div>
+
+                <div class="result-actions">
+                    <button id="save-results" class="btn-secondary">保存推荐结果</button>
+                    <button id="new-test" class="btn-secondary" onclick="location.reload()">重新测试</button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 河南高考志愿填报系统 | 数据来源：EOL阳光高考API（2023-2025年真实录取数据）</p>
+        </footer>
+    </div>
+
+    <script src="data.js?v=5"></script>
+    <script src="data_real.js?v=1"></script>
+    <script src="personality_test_data.js?v=1"></script>
+    <script src="personality.js?v=5"></script>
+    <script src="recommendation.js?v=5"></script>
+    <script src="app.js?v=5"></script>
+</body>
+</html>

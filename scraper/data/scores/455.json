@@ -1,0 +1,14 @@
+{
+  "school_id": 455,
+  "name": "武汉音乐学院",
+  "level": "本科",
+  "is_985": false,
+  "is_211": false,
+  "dual_class": "",
+  "city": "武汉市",
+  "province": "湖北",
+  "type": "艺术类",
+  "nature": "公办",
+  "province_scores": [],
+  "special_scores": []
+}
