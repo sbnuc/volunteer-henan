@@ -120,27 +120,34 @@ class RecommendationEngine {
     calculateCategoryMatch(profile, categoryData) {
         let score = 0;
         const reasons = [];
+        let totalWeight = 0;
+        
+        const matches = [];
         
         if (profile.mbti && categoryData.types) {
             const mbtiMatch = this.calculateMBTIMatch(profile.mbti, categoryData.types);
             if (mbtiMatch > 0) {
-                score += mbtiMatch * 0.4;
-                reasons.push(`您的MBTI类型(${profile.mbti})与该专业类型要求(${categoryData.types.join('/')})高度匹配`);
+                matches.push({ score: mbtiMatch, weight: 0.4, reason: `您的MBTI类型(${profile.mbti})与该专业类型要求(${categoryData.types.join('/')})高度匹配` });
             }
         }
         if (profile.holland && categoryData.holland) {
             const hollandMatch = this.calculateHollandMatch(profile.holland, categoryData.holland);
             if (hollandMatch > 0) {
-                score += hollandMatch * 0.35;
-                reasons.push(`您的霍兰德职业兴趣(${profile.holland})与该专业方向(${categoryData.holland.join('/')})匹配度高`);
+                matches.push({ score: hollandMatch, weight: 0.35, reason: `您的霍兰德职业兴趣(${profile.holland})与该专业方向(${categoryData.holland.join('/')})匹配度高` });
             }
         }
         if (profile.disc && categoryData.disc) {
             const discMatch = this.calculateDISCMatch(profile.disc, categoryData.disc);
             if (discMatch > 0) {
-                score += discMatch * 0.25;
-                reasons.push(`您的DISC性格(${profile.disc})适合该专业的工作方式`);
+                matches.push({ score: discMatch, weight: 0.25, reason: `您的DISC性格(${profile.disc})适合该专业的工作方式` });
             }
+        }
+        
+        if (matches.length > 0) {
+            totalWeight = matches.reduce((sum, m) => sum + m.weight, 0);
+            const normalizedWeight = 1 / totalWeight;
+            score = matches.reduce((sum, m) => sum + m.score * m.weight * normalizedWeight, 0);
+            reasons.push(...matches.map(m => m.reason));
         }
         
         return { score: Math.min(score, 1), reasons };
