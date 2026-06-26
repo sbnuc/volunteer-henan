@@ -325,15 +325,65 @@ function saveResults() {
         subjectGroup: recommendationEngine.subjectGroup,
         checkedSubjects: recommendationEngine.checkedSubjects,
         majors: recommendationEngine.getRecommendedMajors(),
-        universities: recommendationEngine.getRecommendedUniversities(),
-        timestamp: new Date().toISOString()
+        universities: recommendationEngine.getRecommendedUniversities()
     };
-    const dataStr = JSON.stringify(results, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+
+    let content = '═══════════════════════════════════════════\n';
+    content += '         河南高考志愿填报推荐结果\n';
+    content += '═══════════════════════════════════════════\n\n';
+
+    content += `【基本信息】\n`;
+    content += `高考分数：${results.score} 分\n`;
+    content += `省排名位次：第 ${results.ranking} 名\n`;
+    content += `首选科目组：${results.subjectGroup === 'phys' ? '物理组' : '历史组'}\n`;
+    if (results.checkedSubjects && results.checkedSubjects.length > 0) {
+        content += `再选科目：${results.checkedSubjects.join('、')}\n`;
+    }
+    content += '\n';
+
+    content += `【性格测试结果】\n`;
+    if (results.personality) {
+        for (const [testName, testResult] of Object.entries(results.personality)) {
+            if (testResult && testResult.type) {
+                content += `• ${testName}：${testResult.type}`;
+                if (testResult.description) content += ` — ${testResult.description}`;
+                content += '\n';
+            }
+        }
+    }
+    content += '\n';
+
+    content += `【专业推荐】\n`;
+    if (results.majors && results.majors.length > 0) {
+        results.majors.slice(0, 10).forEach((major, i) => {
+            content += `${i + 1}. ${major.name}`;
+            if (major.category) content += `（${major.category}）`;
+            if (major.matchScore) content += ` - 匹配度：${Math.round(major.matchScore * 100)}%`;
+            content += '\n';
+        });
+    }
+    content += '\n';
+
+    content += `【院校推荐】\n`;
+    if (results.universities && results.universities.length > 0) {
+        results.universities.forEach((uni, i) => {
+            content += `${i + 1}. ${uni.name}`;
+            if (uni.level) content += `（${uni.level}）`;
+            if (uni.type) content += ` ${uni.type}`;
+            content += '\n';
+            if (uni.minScore) content += `   最低分：${uni.minScore} | 位次：${uni.minRanking || '-'}\n`;
+        });
+    }
+
+    content += '\n═══════════════════════════════════════════\n';
+    content += `生成时间：${new Date().toLocaleString('zh-CN')}\n`;
+    content += '═══════════════════════════════════════════\n';
+
+    const dataBlob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `志愿填报推荐结果_${new Date().toLocaleDateString()}.json`;
+    link.download = `志愿填报推荐结果_${new Date().toLocaleDateString()}.txt`;
     link.click();
     URL.revokeObjectURL(url);
 }
